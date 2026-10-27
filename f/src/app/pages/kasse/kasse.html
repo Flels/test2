@@ -1,0 +1,147 @@
+<h1>Kasse</h1>
+
+@if (warenkorb.positionen().length === 0) {
+  <p>Ihr Warenkorb ist leer. <a routerLink="/">Zu den Produkten</a></p>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="bestellen()" class="layout" novalidate>
+    <div class="felder">
+      @if (!auth.eingeloggt()) {
+        <p class="login-hinweis">
+          Schon Kunde? <a routerLink="/login" [queryParams]="{ zurueck: '/kasse' }">Anmelden</a>, dann sind Ihre Daten automatisch ausgefüllt.
+        </p>
+      }
+
+      <!-- Kontaktdaten (Aufgabe 3b ii) -->
+      <mat-card appearance="outlined">
+        <mat-card-header><mat-card-title>Kontaktdaten</mat-card-title></mat-card-header>
+        <mat-card-content formGroupName="kunde" class="raster">
+          <mat-form-field>
+            <mat-label>Vorname</mat-label>
+            <input matInput formControlName="vorname" autocomplete="given-name" />
+            <mat-error>Bitte Vorname eingeben</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Nachname</mat-label>
+            <input matInput formControlName="nachname" autocomplete="family-name" />
+            <mat-error>Bitte Nachname eingeben</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>E-Mail-Adresse</mat-label>
+            <input matInput type="email" formControlName="email" autocomplete="email" />
+            <mat-hint>Die Rechnung wird an diese Adresse gesendet</mat-hint>
+            <mat-error>Bitte gültige E-Mail-Adresse eingeben</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Telefonnummer</mat-label>
+            <input matInput type="tel" formControlName="telefon" autocomplete="tel" placeholder="+43 660 1234567" />
+            <mat-error>Bitte gültige Telefonnummer eingeben</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Rechnungsadresse (Aufgabe 3b i) -->
+      <mat-card appearance="outlined">
+        <mat-card-header><mat-card-title>Rechnungsadresse</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="adresse; context: { $implicit: form.controls.rechnungsadresse }" />
+          <mat-checkbox formControlName="lieferGleich">Lieferadresse ist gleich wie Rechnungsadresse</mat-checkbox>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Lieferadresse nur, wenn abweichend -->
+      @if (!lieferGleich()) {
+        <mat-card appearance="outlined">
+          <mat-card-header><mat-card-title>Lieferadresse</mat-card-title></mat-card-header>
+          <mat-card-content>
+            <ng-container *ngTemplateOutlet="adresse; context: { $implicit: form.controls.lieferadresse }" />
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Zahlungsart (Aufgabe 3c – nur Auswahl, keine echte Zahlung) -->
+      <mat-card appearance="outlined">
+        <mat-card-header><mat-card-title>Zahlungsart</mat-card-title></mat-card-header>
+        <mat-card-content>
+          <mat-radio-group formControlName="zahlungsart" class="zahlung">
+            <mat-radio-button value="rechnung">Rechnung (zahlbar innerhalb 14 Tagen)</mat-radio-button>
+            <mat-radio-button value="kreditkarte">Kreditkarte</mat-radio-button>
+          </mat-radio-group>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Zusatzaufgabe: Kundenkonto -->
+      @if (!auth.eingeloggt()) {
+        <mat-card appearance="outlined">
+          <mat-card-content>
+            <mat-checkbox formControlName="kontoErstellen">
+              Kundenkonto erstellen – beim nächsten Mal müssen Sie nichts erneut eingeben
+            </mat-checkbox>
+            @if (kontoErstellen()) {
+              <mat-form-field class="volle-breite passwort">
+                <mat-label>Passwort</mat-label>
+                <input matInput type="password" formControlName="passwort" autocomplete="new-password" />
+                <mat-hint>Mindestens 8 Zeichen</mat-hint>
+                <mat-error>Mindestens 8 Zeichen</mat-error>
+              </mat-form-field>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    <!-- Bestellübersicht -->
+    <mat-card appearance="outlined" class="uebersicht">
+      <mat-card-header><mat-card-title>Ihre Bestellung</mat-card-title></mat-card-header>
+      <mat-card-content>
+        @for (pos of warenkorb.positionen(); track pos.produkt.id) {
+          <p class="zeile">
+            <span>{{ pos.menge }} × {{ pos.produkt.bezeichnung }}</span>
+            <span>{{ pos.produkt.preis * pos.menge | currency: 'EUR' }}</span>
+          </p>
+        }
+        <p class="zeile gesamt">
+          <span>Gesamt</span>
+          <strong>{{ warenkorb.summe() | currency: 'EUR' }}</strong>
+        </p>
+        @if (fehler()) {
+          <p class="fehlermeldung" role="alert">{{ fehler() }}</p>
+        }
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-flat-button type="submit" class="volle-breite" [disabled]="sendet()">
+          @if (sendet()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Zahlungspflichtig bestellen
+          }
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+}
+
+<!-- Wiederverwendbare Adressfelder (für Rechnungs- und Lieferadresse) -->
+<ng-template #adresse let-gruppe>
+  <div [formGroup]="gruppe" class="raster">
+    <mat-form-field class="breit">
+      <mat-label>Straße und Hausnummer</mat-label>
+      <input matInput formControlName="strasse" autocomplete="street-address" />
+      <mat-error>Bitte Straße eingeben</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>PLZ</mat-label>
+      <input matInput formControlName="plz" autocomplete="postal-code" />
+      <mat-error>Bitte gültige PLZ eingeben</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Ort</mat-label>
+      <input matInput formControlName="ort" autocomplete="address-level2" />
+      <mat-error>Bitte Ort eingeben</mat-error>
+    </mat-form-field>
+    <mat-form-field class="breit">
+      <mat-label>Land</mat-label>
+      <input matInput formControlName="land" autocomplete="country-name" />
+      <mat-error>Bitte Land eingeben</mat-error>
+    </mat-form-field>
+  </div>
+</ng-template>

@@ -1,0 +1,78 @@
+@if (rechnung(); as r) {
+  <div class="erfolg nicht-drucken">
+    <mat-icon>check_circle</mat-icon>
+    <div>
+      <strong>Vielen Dank für Ihre Bestellung!</strong>
+      <p>
+        @if (r.mailGesendet) {
+          Die Rechnung wurde an {{ r.kunde.email }} gesendet.
+        } @else {
+          Die Rechnung wird an {{ r.kunde.email }} gesendet.
+        }
+      </p>
+    </div>
+  </div>
+
+  <article class="rechnung">
+    <header class="kopf">
+      <div>
+        <h1>Rechnung</h1>
+        <p>Nr. {{ r.rechnungsnummer }}<br />Datum: {{ r.datum | date: 'dd.MM.yyyy' }}</p>
+      </div>
+      <address>
+        <strong>Röstwerk</strong><br />Hauptplatz 1<br />9020 Klagenfurt
+      </address>
+    </header>
+
+    <div class="adressen">
+      <address>
+        <strong>Rechnungsadresse</strong><br />
+        {{ r.kunde.vorname }} {{ r.kunde.nachname }}<br />
+        {{ r.rechnungsadresse.strasse }}<br />
+        {{ r.rechnungsadresse.plz }} {{ r.rechnungsadresse.ort }}<br />
+        {{ r.rechnungsadresse.land }}
+      </address>
+      <address>
+        <strong>Lieferadresse</strong><br />
+        {{ r.kunde.vorname }} {{ r.kunde.nachname }}<br />
+        {{ r.lieferadresse.strasse }}<br />
+        {{ r.lieferadresse.plz }} {{ r.lieferadresse.ort }}<br />
+        {{ r.lieferadresse.land }}
+      </address>
+    </div>
+
+    <div class="tabelle-scroll">
+      <table>
+        <thead>
+          <tr><th>Produkt</th><th class="zahl">Menge</th><th class="zahl">Einzelpreis</th><th class="zahl">Summe</th></tr>
+        </thead>
+        <tbody>
+          @for (p of r.positionen; track p.produktId) {
+            <tr>
+              <td>{{ p.bezeichnung }}</td>
+              <td class="zahl">{{ p.menge }}</td>
+              <td class="zahl">{{ p.einzelpreis | currency: 'EUR' }}</td>
+              <td class="zahl">{{ p.summe | currency: 'EUR' }}</td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3">Netto</td><td class="zahl">{{ r.netto | currency: 'EUR' }}</td></tr>
+          <tr><td colspan="3">20 % USt.</td><td class="zahl">{{ r.ust | currency: 'EUR' }}</td></tr>
+          <tr class="gesamt"><td colspan="3">Gesamtbetrag</td><td class="zahl">{{ r.brutto | currency: 'EUR' }}</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p>
+      Zahlungsart: {{ r.zahlungsart === 'rechnung' ? 'Rechnung – zahlbar innerhalb von 14 Tagen' : 'Kreditkarte' }}
+    </p>
+  </article>
+
+  <div class="aktionen nicht-drucken">
+    <button mat-stroked-button (click)="drucken()"><mat-icon>print</mat-icon> Drucken</button>
+    <a mat-flat-button routerLink="/">Weiter einkaufen</a>
+  </div>
+} @else {
+  <p>Keine Rechnung vorhanden. <a routerLink="/">Zu den Produkten</a></p>
+}

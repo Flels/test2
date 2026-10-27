@@ -1,0 +1,63 @@
+<h1>Statistik</h1>
+
+@if (fehler()) {
+  <p class="fehlermeldung">{{ fehler() }}</p>
+} @else if (daten(); as d) {
+  <div class="zwei-spalten">
+    <!-- 7b: meistbestellte Produkte -->
+    <mat-card appearance="outlined">
+      <mat-card-header><mat-card-title>Top 5 – meistbestellt</mat-card-title></mat-card-header>
+      <mat-card-content>
+        @for (p of d.meiste; track p.id; let i = $index) {
+          <div class="balken-zeile">
+            <span class="name">{{ i + 1 }}. {{ p.bezeichnung }}</span>
+            <div class="balken"><div class="fuellung" [style.width.%]="(p.menge / maxMeiste()) * 100"></div></div>
+            <span class="wert">{{ p.menge }} Stk.</span>
+          </div>
+        } @empty {
+          <p>Noch keine Bestellungen.</p>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 7a: am seltensten bestellte Produkte (inkl. nie bestellter) -->
+    <mat-card appearance="outlined">
+      <mat-card-header><mat-card-title>5 am seltensten bestellt</mat-card-title></mat-card-header>
+      <mat-card-content>
+        @for (p of d.seltenste; track p.id) {
+          <div class="balken-zeile">
+            <span class="name">{{ p.bezeichnung }}</span>
+            <div class="balken"><div class="fuellung selten" [style.width.%]="(p.menge / maxSeltenste()) * 100"></div></div>
+            <span class="wert">{{ p.menge }} Stk.</span>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- 7c: Bestellungen der letzten 4 Wochen -->
+  <h2>Bestellungen der letzten 4 Wochen</h2>
+  <p>{{ d.letzteVierWochen.length }} Bestellungen · Umsatz {{ umsatz4Wochen() | currency: 'EUR' }}</p>
+  <div class="tabelle-scroll">
+    <table>
+      <thead>
+        <tr><th>Nr.</th><th>Datum</th><th>Kunde</th><th>Zahlungsart</th><th class="zahl">Betrag</th></tr>
+      </thead>
+      <tbody>
+        @for (b of d.letzteVierWochen; track b.id) {
+          <tr>
+            <td>{{ b.id }}</td>
+            <td>{{ b.bestelldatum | date: 'dd.MM.yyyy HH:mm' }}</td>
+            <td>{{ b.kunde }}</td>
+            <td>{{ b.zahlungsart === 'rechnung' ? 'Rechnung' : 'Kreditkarte' }}</td>
+            <td class="zahl">{{ b.gesamtbetrag | currency: 'EUR' }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5">Keine Bestellungen in den letzten 4 Wochen.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <div class="zentriert"><mat-spinner diameter="40" /></div>
+}

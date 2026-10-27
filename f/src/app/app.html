@@ -1,0 +1,44 @@
+<mat-toolbar class="kopfzeile">
+  <a routerLink="/" class="logo">
+    <mat-icon>local_cafe</mat-icon>
+    <span>Röstwerk</span>
+  </a>
+
+  <span class="platzhalter"></span>
+
+  <nav class="navigation" aria-label="Hauptnavigation">
+    <a mat-button routerLink="/" routerLinkActive="aktiv" [routerLinkActiveOptions]="{ exact: true }">
+      <mat-icon>storefront</mat-icon><span class="text">Produkte</span>
+    </a>
+    <a mat-button routerLink="/statistik" routerLinkActive="aktiv">
+      <mat-icon>bar_chart</mat-icon><span class="text">Statistik</span>
+    </a>
+
+    @if (auth.eingeloggt()) {
+      <button mat-button (click)="logout()">
+        <mat-icon>logout</mat-icon><span class="text">Abmelden</span>
+      </button>
+    } @else {
+      <a mat-button routerLink="/login" routerLinkActive="aktiv">
+        <mat-icon>person</mat-icon><span class="text">Anmelden</span>
+      </a>
+    }
+
+    <a mat-icon-button routerLink="/warenkorb" aria-label="Warenkorb">
+      <mat-icon
+        [matBadge]="warenkorb.anzahl()"
+        [matBadgeHidden]="warenkorb.anzahl() === 0"
+        matBadgeColor="warn"
+        aria-hidden="false"
+      >shopping_cart</mat-icon>
+    </a>
+  </nav>
+</mat-toolbar>
+
+<main class="inhalt">
+  <router-outlet />
+</main>
+
+<footer class="fusszeile">
+  Röstwerk · Hauptplatz 1 · 9020 Klagenfurt · Alle Preise inkl. 20 % USt.
+</footer>

@@ -1,0 +1,74 @@
+.erfolg {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+
+  p {
+    margin: 4px 0 0;
+  }
+}
+
+.rechnung {
+  padding: 24px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+}
+
+.kopf,
+.adressen {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+address {
+  font-style: normal;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    text-align: left;
+  }
+
+  .zahl {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  tfoot td {
+    border: none;
+    text-align: right;
+  }
+
+  .gesamt td {
+    font-weight: 700;
+    border-top: 2px solid var(--mat-sys-on-surface);
+  }
+}
+
+.aktionen {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+// Beim Drucken nur die Rechnung, ohne Buttons
+@media print {
+  .nicht-drucken {
+    display: none !important;
+  }
+}

@@ -1,0 +1,34 @@
+// Responsive Raster: so viele Spalten wie Platz ist, jede mind. 240px breit
+.raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.karte {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  mat-card-actions {
+    margin-top: auto; // Buttons immer unten, auch bei langen Namen
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+.bild-link img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+mat-card-title a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

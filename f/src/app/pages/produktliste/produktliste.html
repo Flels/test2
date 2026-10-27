@@ -1,0 +1,32 @@
+<h1>Unsere Produkte</h1>
+
+@if (laedt()) {
+  <div class="zentriert"><mat-spinner diameter="40" /></div>
+} @else if (fehler()) {
+  <p class="fehlermeldung">{{ fehler() }}</p>
+} @else {
+  <div class="raster">
+    @for (produkt of produkte(); track produkt.id) {
+      <mat-card appearance="outlined" class="karte">
+        <!-- Klick auf Bild oder Name öffnet die Detailseite (Aufgabe 2b) -->
+        <a [routerLink]="['/produkt', produkt.id]" class="bild-link">
+          <img mat-card-image [src]="produktService.bildUrl(produkt.bildPfad)" [alt]="produkt.bezeichnung" loading="lazy" />
+        </a>
+        <mat-card-header>
+          <mat-card-title>
+            <a [routerLink]="['/produkt', produkt.id]">{{ produkt.bezeichnung }}</a>
+          </mat-card-title>
+          <mat-card-subtitle>{{ produkt.preis | currency: 'EUR' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-actions align="end">
+          <a mat-button [routerLink]="['/produkt', produkt.id]">Details</a>
+          <button mat-flat-button (click)="inDenWarenkorb(produkt)">
+            <mat-icon>add_shopping_cart</mat-icon> In den Warenkorb
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    } @empty {
+      <p>Derzeit sind keine Produkte verfügbar.</p>
+    }
+  </div>
+}

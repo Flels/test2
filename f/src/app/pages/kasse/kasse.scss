@@ -1,0 +1,71 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.felder {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Formularfelder in 2 Spalten, "breit" geht über beide
+.raster {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+  padding-top: 8px;
+
+  .breit {
+    grid-column: 1 / -1;
+  }
+}
+
+.zahlung {
+  display: flex;
+  flex-direction: column;
+}
+
+.passwort {
+  margin-top: 8px;
+}
+
+.login-hinweis {
+  margin: 0;
+}
+
+.uebersicht {
+  position: sticky;
+  top: 80px; // bleibt beim Scrollen sichtbar
+}
+
+.zeile {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.gesamt {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  padding-top: 8px;
+  font: var(--mat-sys-title-medium);
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .uebersicht {
+    position: static;
+  }
+}
+
+@media (max-width: 500px) {
+  .raster {
+    grid-template-columns: 1fr;
+  }
+}

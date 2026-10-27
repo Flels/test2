@@ -1,0 +1,49 @@
+<h1>Warenkorb</h1>
+
+@if (warenkorb.positionen().length === 0) {
+  <div class="leer">
+    <mat-icon>remove_shopping_cart</mat-icon>
+    <p>Ihr Warenkorb ist leer.</p>
+    <a mat-flat-button routerLink="/">Weiter einkaufen</a>
+  </div>
+} @else {
+  <div class="layout">
+    <ul class="positionen">
+      @for (pos of warenkorb.positionen(); track pos.produkt.id) {
+        <li class="position">
+          <img [src]="produktService.bildUrl(pos.produkt.bildPfad)" [alt]="pos.produkt.bezeichnung" />
+          <div class="info">
+            <a [routerLink]="['/produkt', pos.produkt.id]">{{ pos.produkt.bezeichnung }}</a>
+            <span class="einzelpreis">{{ pos.produkt.preis | currency: 'EUR' }} / Stk.</span>
+          </div>
+          <div class="menge">
+            <button mat-icon-button (click)="warenkorb.mengeSetzen(pos.produkt.id, pos.menge - 1)" aria-label="Weniger">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span>{{ pos.menge }}</span>
+            <button mat-icon-button (click)="warenkorb.mengeSetzen(pos.produkt.id, pos.menge + 1)" aria-label="Mehr">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <strong class="summe">{{ pos.produkt.preis * pos.menge | currency: 'EUR' }}</strong>
+          <button mat-icon-button (click)="warenkorb.entfernen(pos.produkt.id)" aria-label="Entfernen">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </li>
+      }
+    </ul>
+
+    <mat-card appearance="outlined" class="zusammenfassung">
+      <mat-card-content>
+        <p class="gesamt">
+          <span>Gesamt ({{ warenkorb.anzahl() }} Artikel)</span>
+          <strong>{{ warenkorb.summe() | currency: 'EUR' }}</strong>
+        </p>
+        <p class="hinweis">inkl. 20 % USt.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <a mat-flat-button routerLink="/kasse" class="volle-breite">Zur Kasse</a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+}

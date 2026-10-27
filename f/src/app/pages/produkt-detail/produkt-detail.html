@@ -1,0 +1,40 @@
+<a mat-button routerLink="/"><mat-icon>arrow_back</mat-icon> Zurück zur Übersicht</a>
+
+@if (fehler()) {
+  <p class="fehlermeldung">{{ fehler() }}</p>
+} @else if (produkt(); as p) {
+  <div class="detail">
+    <img [src]="produktService.bildUrl(p.bildPfad)" [alt]="p.bezeichnung" />
+
+    <div>
+      <h1>{{ p.bezeichnung }}</h1>
+      <p class="preis">{{ p.preis | currency: 'EUR' }}</p>
+      @if (p.beschreibung) {
+        <p>{{ p.beschreibung }}</p>
+      }
+
+      @if (p.eigenschaften.length) {
+        <h2>Eigenschaften</h2>
+        <dl class="eigenschaften">
+          @for (e of p.eigenschaften; track e.name) {
+            <dt>{{ e.name }}</dt>
+            <dd>{{ e.wert }}</dd>
+          }
+        </dl>
+      }
+
+      <div class="kaufen">
+        <div class="menge" role="group" aria-label="Menge">
+          <button mat-icon-button (click)="mengeAendern(-1)" aria-label="Weniger"><mat-icon>remove</mat-icon></button>
+          <span>{{ menge() }}</span>
+          <button mat-icon-button (click)="mengeAendern(1)" aria-label="Mehr"><mat-icon>add</mat-icon></button>
+        </div>
+        <button mat-flat-button (click)="inDenWarenkorb(p)">
+          <mat-icon>add_shopping_cart</mat-icon> In den Warenkorb
+        </button>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="zentriert"><mat-spinner diameter="40" /></div>
+}

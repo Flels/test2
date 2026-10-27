@@ -1,0 +1,58 @@
+.zwei-spalten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.balken-zeile {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.2fr) 1fr 60px;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.balken {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--mat-sys-surface-container-high);
+  overflow: hidden;
+}
+
+.fuellung {
+  height: 100%;
+  border-radius: 5px;
+  background: var(--mat-sys-primary);
+
+  &.selten {
+    background: var(--mat-sys-outline);
+  }
+}
+
+.wert {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .zahl {
+    text-align: right;
+  }
+}

@@ -1,0 +1,17 @@
+// Gemeinsame Styles für Login und Registrierung
+.auth-karte {
+  max-width: 420px;
+  margin: 24px auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+}
+
+.wechsel {
+  margin-top: 16px;
+  text-align: center;
+}

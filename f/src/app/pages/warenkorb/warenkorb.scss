@@ -1,0 +1,94 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+.positionen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.position {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  img {
+    width: 72px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+
+  a {
+    color: inherit;
+    font-weight: 500;
+  }
+}
+
+.einzelpreis,
+.hinweis {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.menge {
+  display: flex;
+  align-items: center;
+}
+
+.summe {
+  min-width: 80px;
+  text-align: right;
+}
+
+.gesamt {
+  display: flex;
+  justify-content: space-between;
+  font: var(--mat-sys-title-medium);
+}
+
+.leer {
+  text-align: center;
+  padding: 48px 0;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Handy: Bild + Name oben, Menge/Summe/Löschen darunter
+@media (max-width: 500px) {
+  .position {
+    grid-template-columns: 60px 1fr auto;
+    grid-template-areas:
+      'bild info info'
+      'menge summe loeschen';
+
+    img { grid-area: bild; width: 60px; height: 45px; }
+    .info { grid-area: info; }
+    .menge { grid-area: menge; }
+    .summe { grid-area: summe; }
+    > button { grid-area: loeschen; }
+  }
+}
